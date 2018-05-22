@@ -18,6 +18,11 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/chosen/1.5.1/chosen.jquery.min.js"></script>
 
+   <!-- Link JS Files -->
+   <!-- <script src="../routing/apiRoutes.js"></script>
+   <script src="../routing/htmlRoutes.js"></script>
+   <script src="../data/friends.js"></script> -->
+
 </head>
 
 <body>
@@ -189,87 +194,127 @@
     </div>
   </div>
 
-  <script type="text/javascript">
-    // Chosen CSS
-    var config = {
-      ".chosen-select": {},
-      ".chosen-select-deselect": {
-        allow_single_deselect: true
-      },
-      ".chosen-select-no-single": {
-        disable_search_threshold: 10
-      },
-      ".chosen-select-no-results": {
-        no_results_text: "Oops, nothing found!"
-      },
-      ".chosen-select-width": {
-        width: "95%"
-      }
-    };
 
-    for (var selector in config) {
-      $(selector).chosen(config[selector]);
-    }
 
-    // Capture the form inputs
-    $("#submit").on("click", function(event) {
-      event.preventDefault();
+<script type="text/javascript">
 
-      // Form validation
-      function validateForm() {
-        var isValid = true;
-        $(".form-control").each(function() {
-          if ($(this).val() === "") {
-            isValid = false;
-          }
-        });
 
-        $(".chosen-select").each(function() {
+// Chosen CSS
+var config = {
+  ".chosen-select": {},
+  ".chosen-select-deselect": {
+    allow_single_deselect: true
+  },
+  ".chosen-select-no-single": {
+    disable_search_threshold: 10
+  },
+  ".chosen-select-no-results": {
+    no_results_text: "Oops, nothing found!"
+  },
+  ".chosen-select-width": {
+    width: "95%"
+  }
+};
 
-          if ($(this).val() === "") {
-            isValid = false;
-          }
-        });
-        return isValid;
-      }
+for (var selector in config) {
+  $(selector).chosen(config[selector]);
+}
 
-      // If all required fields are filled
-      if (validateForm()) {
-        // Create an object for the user"s data
-        var userData = {
-          name: $("#name").val(),
-          photo: $("#photo").val(),
-          scores: [
-            $("#q1").val(),
-            $("#q2").val(),
-            $("#q3").val(),
-            $("#q4").val(),
-            $("#q5").val(),
-            $("#q6").val(),
-            $("#q7").val(),
-            $("#q8").val(),
-            $("#q9").val(),
-            $("#q10").val()
-          ]
-        };
+// Capture the form inputs
+$("#submit").on("click", function(event) {
+    var userData;
+  event.preventDefault();
 
-        // AJAX post the data to the friends API.
-        $.post("/api/friends", userData, function(data) {
-
-          // Grab the result from the AJAX post so that the best match's name and photo are displayed.
-          $("#match-name").text(data.name);
-          $("#match-img").attr("src", data.photo);
-
-          // Show the modal with the best match
-          $("#results-modal").modal("toggle");
-
-        });
-      } else {
-        alert("Please fill out all fields before submitting!");
+  // Form validation
+  function validateForm() {
+    var isValid = true;
+    $(".form-control").each(function() {
+      if ($(this).val() === "") {
+        isValid = false;
       }
     });
-  </script>
 
+    $(".chosen-select").each(function() {
+
+      if ($(this).val() === "") {
+        isValid = false;
+      }
+    });
+    return isValid;
+  }
+
+  // If all required fields are filled
+  if (validateForm()) {
+    // Create an object for the user"s data
+    userData = {
+      name: $("#name").val(),
+      photo: $("#photo").val(),
+      scores: [
+        $("#q1").val(),
+        $("#q2").val(),
+        $("#q3").val(),
+        $("#q4").val(),
+        $("#q5").val(),
+        $("#q6").val(),
+        $("#q7").val(),
+        $("#q8").val(),
+        $("#q9").val(),
+        $("#q10").val()
+      ]
+    };
+
+// AJAX post the data to the friends API.
+$.post("/api/new", userData, function(data) {
+// alert("added a new friend!")
+console.log(data)
+});
+
+// AJAX get data from the friends API and find best Match friend
+var Bestmatch;
+$.get("/api/friends", function(data) {
+console.log("logging out all available friends")
+console.log(data)
+
+
+var SumDiffArr=[];
+for(n=0;n<(data.length-1);n++){
+
+var SumDiff = 0;
+for (i=0; i<userData.scores.length; i++){
+SumDiff+=Math.abs(data[n].scores[i] - userData.scores[i])
+}
+// console.log("SumDiff", SumDiff);
+SumDiffArr.push(SumDiff);
+
+}
+console.log("SumDiffArr", SumDiffArr);
+
+var MinDif=Math.min.apply(null, SumDiffArr);
+console.log("Minimum difference score", MinDif); 
+
+var Index = SumDiffArr.indexOf(MinDif);
+Bestmatch = data[Index];
+console.log("Bestmatch", Bestmatch.name);
+
+$("#match-name").text(Bestmatch.name);
+$("#match-img").attr("src", Bestmatch.photo);
+// Show the modal with the best match
+$("#results-modal").modal("toggle");
+
+});
+
+  } else {
+    alert("Please fill out all fields before submitting!");
+  }
+
+
+// printBestmatch();
+
+});//end of submit form
+
+
+
+</script>
 </body>
 
 </html>
