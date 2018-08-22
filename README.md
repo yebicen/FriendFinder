@@ -1,117 +1,51 @@
-# FriendFinder
-https://young-basin-88719.herokuapp.com/
+"FriendFinder" application is basically a dating app. This full-stack site will take in results from the users' surveys, then compare their answers with those from other users. The app will then display the name and picture of the user with the best overall match. 
 
+- The app use Express to handle routing. In the app, the survey have 10 questions of your choosing. Each answer is on a scale of 1 to 5 based on how much the user agrees or disagrees with a question.
 
-Basic:
-- This node homework utilized three body-parser, express and path
+-The server.js file requires the basic npm packages: express, body-parser and path.
 
-- In the entry file server.js, at the very beginning required all nodes.
+-The htmlRoutes.js file includes two routes:
+A GET Route to /survey which display the survey page.
+A default, catch-all route that leads to home.html which displays the home page. 
 
-- In server.js, connect server using express; and require router files at line 18
-```
+-The apiRoutes.js file contains two routes:
+A GET route with the url /api/friends. This will be used to display a JSON of all possible friends.
+A POST routes /api/friends. This will be used to handle incoming survey results. This route will also be used to handle the compatibility logic. 
 
-require("./app/routing/apiRoutes")(app);
-require("./app/routing/htmlRoutes")(app);
-
-
-```
-
-- In the routing folder, htmlRoutes.js file is used to get the home page and survey page display; apiRoutes.js file is used to get the api pages display. In apiRoutes.js, use post to add new friend and use path to logout a single friend. 
-
-```
-
-app.get("/api/:friends?", function(req, res) {
-  var chosen = req.params.friends;
-  
-
-  console.log(chosen);
-
-  for (var i = 0; i < friends.length; i++) {
-    if (chosen === friends[i].name) {
-      return res.json(friends[i]);
-    }
-  }
-
-  return res.json(false);
-});
-
-
-```
-
-- use body-parser middleware to post and push to the friends array
-```
-
-app.post("/api/new", function(req, res) {
- 
-  var userData = req.body;
-
-  console.log(userData);
-  friends.push(userData);
-  res.json(userData);
-
-```
-
-- In the public folder, is the home page html and survey page html. In survery.html, use jQuery get the input from user, post a new friend first on line 263 and then start the logic code from line 269 to calculate the bestmatch.
-
-```
-if (validateForm()) {
-    // Create an object for the user"s data
-    userData = {
-      name: $("#name").val(),
-      photo: $("#photo").val(),
-      scores: [
-        $("#q1").val(),
-        $("#q2").val(),
-        $("#q3").val(),
-        $("#q4").val(),
-        $("#q5").val(),
-        $("#q6").val(),
-        $("#q7").val(),
-        $("#q8").val(),
-        $("#q9").val(),
-        $("#q10").val()
-      ]
-    };
-
-$.post("/api/new", userData, function(data) {
-console.log(data)
-});
-
-var Bestmatch;
-$.get("/api/friends", function(data) {
-console.log("logging out all available friends")
-console.log(data)
-
-
-var SumDiffArr=[];
-for(n=0;n<(data.length-1);n++){
-
-var SumDiff = 0;
-for (i=0; i<userData.scores.length; i++){
-SumDiff+=Math.abs(data[n].scores[i] - userData.scores[i])
+- The application's data are saved inside of app/data/friends.js as an array of objects. Each of these objects has the format as below.
+{
+  "name":"Ahmed",
+  "photo":"https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/6/005/064/1bd/3435aa3.jpg",
+  "scores":[
+      5,
+      1,
+      4,
+      4,
+      5,
+      1,
+      2,
+      5,
+      4,
+      1
+    ]
 }
-// console.log("SumDiff", SumDiff);
-SumDiffArr.push(SumDiff);
 
-}
-console.log("SumDiffArr", SumDiffArr);
+- Determine the user's most compatible friend using the algorithm as below:
+Convert each user's results into a simple array of numbers (ex: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]).
+With that done, compare the difference between current user's scores against those from other users, question by question. Add up the differences to calculate the totalDifference.
 
-var MinDif=Math.min.apply(null, SumDiffArr);
-console.log("Minimum difference score", MinDif); 
+Example: 
+User 1: [5, 1, 4, 4, 5, 1, 2, 5, 4, 1]
+User 2: [3, 2, 6, 4, 5, 1, 2, 5, 4, 1]
+Total Difference: 2 + 1 + 2 = 5
 
-var Index = SumDiffArr.indexOf(MinDif);
-Bestmatch = data[Index];
-console.log("Bestmatch", Bestmatch.name);
+- Take the absolute value of the differences. The closest match will be the user with the least amount of difference, then display the result as a modal pop-up with both the name and picture of the closest match.
 
 
-```
 
-- Last, use modal to display the bestmatch calculated above
 
-```
-$("#match-name").text(Bestmatch.name);
-$("#match-img").attr("src", Bestmatch.photo);
-// Show the modal with the best match
-$("#results-modal").modal("toggle");
 
-```
+Minimum Requirements
+
+Attempt to complete homework assignment as described in instructions. If unable to complete certain portions, please pseudocode these portions to describe what remains to be completed. Adding a README.md as well as adding this homework to your portfolio are required as well and more information can be found below.
+
