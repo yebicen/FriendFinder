@@ -1,3 +1,5 @@
+https://young-basin-88719.herokuapp.com/
+
 "FriendFinder" application is basically a dating app. This full-stack site will take in results from the users' surveys, then compare their answers with those from other users. The app will then display the name and picture of the user with the best overall match. 
 
 - The app use Express to handle routing. In the app, the survey have 10 questions of your choosing. Each answer is on a scale of 1 to 5 based on how much the user agrees or disagrees with a question.
@@ -15,7 +17,7 @@ A POST routes /api/friends. This will be used to handle incoming survey results.
 - The application's data are saved inside of app/data/friends.js as an array of objects. Each of these objects has the format as below.
 {
   "name":"Ahmed",
-  "photo":"https://media.licdn.com/mpr/mpr/shrinknp_400_400/p/6/005/064/1bd/3435aa3.jpg",
+  "photo":"photo.jpg",
   "scores":[
       5,
       1,
