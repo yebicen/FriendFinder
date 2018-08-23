@@ -1,4 +1,5 @@
-http://g.recordit.co/Dui9mX1n39.gif
+![Alt Text](http://g.recordit.co/Dui9mX1n39.gif)
+
 
 Heroku link:
 https://young-basin-88719.herokuapp.com/
