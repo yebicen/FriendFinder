@@ -1,4 +1,4 @@
-![Alt Text](http://g.recordit.co/Dui9mX1n39.gif)
+![Alt Text](Friends.gif)
 
 
 Heroku link:
